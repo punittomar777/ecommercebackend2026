@@ -1,5 +1,5 @@
 const Product = require("../models/product.model");
-const redisClient = require("../config/redis")
+// const redisClient = require("../config/redis")
 
 // CREATE (Admin only)
 exports.createProduct = async (req, res, next) => {
@@ -9,7 +9,7 @@ exports.createProduct = async (req, res, next) => {
       createdBy: req.user.id
     });
     
-    await redisClient.del("products:*");
+    // await redisClient.del("products:*");
     res.status(201).json(product);
   } catch (error) {
     next(error);
@@ -20,13 +20,13 @@ exports.createProduct = async (req, res, next) => {
 exports.getProducts = async (req, res, next) => {
   try {
 
-      const cacheKey = `products:${JSON.stringify(req.query)}`;
+      // const cacheKey = `products:${JSON.stringify(req.query)}`;
 
     // 1 Check cache
-    const cachedData = await redisClient.get(cacheKey);
-    if (cachedData) {
-      return res.json(JSON.parse(cachedData));
-    }
+    // const cachedData = await redisClient.get(cacheKey);
+    // if (cachedData) {
+    //   return res.json(JSON.parse(cachedData));
+    // }
 
     const { category, minPrice, maxPrice } = req.query;
 
@@ -43,11 +43,11 @@ exports.getProducts = async (req, res, next) => {
     const products = await Product.find(filter).sort({ createdAt: -1 });
 
      // 3 Save to cache (TTL 60 sec)
-    await redisClient.setEx(
-      cacheKey,
-      60,
-      JSON.stringify(products)
-    );
+    // await redisClient.setEx(
+    //   cacheKey,
+    //   60,
+    //   JSON.stringify(products)
+    // );
 
     res.json(products);
   } catch (error) {
@@ -77,7 +77,7 @@ exports.updateProduct = async (req, res, next) => {
       req.body,
       { new: true }
     );
-    await redisClient.del("products:*");
+    // await redisClient.del("products:*");
 
     res.json(product);
   } catch (error) {
@@ -89,7 +89,7 @@ exports.updateProduct = async (req, res, next) => {
 exports.deleteProduct = async (req, res, next) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
-    await redisClient.del("products:*");
+    // await redisClient.del("products:*");
   } catch (error) {
     next(error);
   }

@@ -6,9 +6,10 @@ const auth = require("../middleware/auth.middleware");
 
 router.post("/create", auth, paymentController.createPayment);
 
-router.post("/webhook",
+router.post(
+  "/webhook",
   express.raw({ type: "application/json" }),
-  paymentController.webhook
+  paymentController.webhook,
 );
 
 module.exports = router;
