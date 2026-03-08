@@ -17,8 +17,8 @@ router.get("/", getProducts);
 router.get("/:id", getProductById);
 
 // Admin
-router.post("/", auth, authorize("admin"), createProduct);
-router.put("/:id", auth, authorize("admin"), updateProduct);
-router.delete("/:id", auth, authorize("admin"), deleteProduct);
+router.post("/", auth, authorize("admin","user"), createProduct);
+router.put("/:id", auth, authorize("admin","user"), updateProduct);
+router.delete("/:id", auth, authorize("admin","user"), deleteProduct);
 
 module.exports = router;
