@@ -2,11 +2,10 @@ const Stripe = require("stripe");
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const Order = require("../models/order.model");
+const product = require("../models/product.model");
 
 exports.createPayment = async (req, res) => {
   try {
-    console.log("hi");
-    console.log(req.body);
     const { productId, amount } = req.body;
     const order = await Order.create({
       user: req.user.id,
@@ -65,15 +64,27 @@ exports.webhook = async (req, res) => {
 
   console.log("Event type:", event.type);
 
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
+  let orderId;
+  let order;
+if (event.type === "checkout.session.completed") 
+	{
+  		  const session = event.data.object;
+  	 	orderId = session.metadata.orderId;
+		order = await Order.findByIdAndUpdate(orderId, {
+     		 status: "paid",
+		    });
+		console.log("orderId=",orderId, "productId=", order.product)
+		if (order && order.product) 
+			{
+  // 3. Update the Product Stock using $inc
+  // $inc: { stock: -1 } decreases the value by 1
+ 		 await Product.findByIdAndUpdate(order.product, 
+			{
+   			 $inc: { stock: -1 }
+  			});
+		console.log("stock updated");
+  		}
+	}
 
-    const orderId = session.metadata.orderId;
-
-    await Order.findByIdAndUpdate(orderId, {
-      status: "paid",
-    });
-  }
-
-  res.json({ received: true });
+  res.json({ orderId, received: true });
 };

@@ -71,6 +71,7 @@ exports.getProductById = async (req, res, next) => {
 
 // UPDATE (Admin only)
 exports.updateProduct = async (req, res, next) => {
+  
   try {
     const product = await Product.findByIdAndUpdate(
       req.params.id,
@@ -89,6 +90,7 @@ exports.updateProduct = async (req, res, next) => {
 exports.deleteProduct = async (req, res, next) => {
   try {
     await Product.findByIdAndDelete(req.params.id);
+    res.json({ message: "Product deleted" });
     // await redisClient.del("products:*");
   } catch (error) {
     next(error);

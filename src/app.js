@@ -14,6 +14,7 @@ app.use(morgan("combined"));
 app.use(requestLogger); // logger middleware
 
 //middleware to parse json
+app.use("/api/checkout", require("./routes/payment.routes"));
 app.use(express.json());
 //auth routes
 app.use("/api/auth", require("./routes/auth.routes"));
@@ -26,6 +27,9 @@ app.use("/api/admin", require("./routes/admin.routes"));
 // app.use(rateLimiter);
 //product routes
 app.use("/api/products", require("./routes/product.routes"));
+
+//order routes
+app.use("/api/orders", require("./routes/order.routes"));
 
 //health check route
 app.get("/health", (req, res) => {
