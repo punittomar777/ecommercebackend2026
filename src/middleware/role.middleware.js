@@ -1,7 +1,6 @@
 module.exports = (...allowedRoles) => {
   return (req, res, next) => {
-console.log("User from Request:", req.user); // <--- Add this
-    console.log("Allowed Roles:", allowedRoles);
+    console.log("User from Request:", req.user); // <--- Add this
     if (!allowedRoles.includes(req.user.role)) {
       return res.status(403).json({ message: "Access denied" });
     }

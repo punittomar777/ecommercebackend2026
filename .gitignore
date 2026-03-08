@@ -3,3 +3,4 @@ backend2026.pem
 npm-debug.log
 package-lock.json
 .env
+*.save
